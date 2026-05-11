@@ -129,21 +129,6 @@ Yes — the top features align directly with how insurance companies price risk:
 
 ---
 
-## Repository Structure
-
-```
-Car-Insurance-Claim-Prediction/
-│
-├── Car_Insurance_Claim_Classification.ipynb   # Main project notebook
-├── Car_Insurance_Claim.csv                    # Dataset
-├── top10_features.png                         # Feature importance chart
-├── explanatory_credit_score.png               # Explanatory visual 1
-├── explanatory_driving_experience.png         # Explanatory visual 2
-└── README.md                                  # This file
-```
-
----
-
 ## Author
 
 **Mohammed Shehada**
