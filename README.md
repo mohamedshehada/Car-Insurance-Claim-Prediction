@@ -111,7 +111,7 @@ Yes — the top features align directly with how insurance companies price risk:
 
 ### 1. Credit Score vs. Claim Outcome
 
-![Credit Score](explanatory_credit_score.png)
+![Average Credit Score by Claim Outcome](Average_Credit_Score_by_Claim_Outcome.png)
 
 **Insight:** Customers with a **Very Low credit score (below 0.30)** file insurance claims at a rate of **59.4%** — more than six times higher than customers with a **Very High credit score (above 0.80)**, who file at only **9.6%**. Credit score is the single strongest predictor of claim risk in this dataset.
 
