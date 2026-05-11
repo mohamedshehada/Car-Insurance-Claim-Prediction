@@ -144,20 +144,8 @@ Car-Insurance-Claim-Prediction/
 
 ---
 
-## How to Run
-
-1. Clone this repository
-2. Install requirements:
-   ```bash
-   pip install pandas numpy matplotlib seaborn scikit-learn
-   ```
-3. Open `Car_Insurance_Claim_Classification.ipynb` in JupyterLab or Google Colab
-4. Run all cells in order
-
----
-
 ## Author
 
 **Mohammed Shehada**
-Computer Engineering Graduate | Data Science & ML Student @ AXSOSACADEMY
+Computer Engineering Graduate | Data Science & ML Student
 GitHub: [@mohamedshehada](https://github.com/mohamedshehada)
