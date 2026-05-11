@@ -111,7 +111,7 @@ Yes — the top features align directly with how insurance companies price risk:
 
 ### 1. Credit Score vs. Claim Outcome
 
-![Average Credit Score by Claim Outcome](Average_Credit_Score_by_Claim_Outcome.png)
+![Average Credit Score by Claim Outcome](Average%20Credit%20Score%20by%20Claim%20Outcome.png)
 
 **Insight:** Customers with a **Very Low credit score (below 0.30)** file insurance claims at a rate of **59.4%** — more than six times higher than customers with a **Very High credit score (above 0.80)**, who file at only **9.6%**. Credit score is the single strongest predictor of claim risk in this dataset.
 
@@ -121,7 +121,7 @@ Yes — the top features align directly with how insurance companies price risk:
 
 ### 2. Driving Experience vs. Claim Rate
 
-![Driving Experience](explanatory_driving_experience.png)
+![Claim Rate by Driving Experience](Claim%20Rate%20by%20Driving%20Experience.png)
 
 **Insight:** **Beginner drivers (0–9 years)** file claims at **62.8%** — over 30 times higher than **veterans with 30+ years of experience**, who file at just **1.9%**. This steep drop-off confirms that driving experience is one of the most actionable variables for premium setting.
 
