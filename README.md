@@ -1,246 +1,334 @@
 # 🚗 Car Insurance Claim Prediction
 
-A complete machine learning project that predicts whether a customer will file a car insurance claim. Built in three progressive parts — from classical ML to deep learning with hyperparameter optimization.
+A complete Machine Learning project that predicts whether a customer will file a car insurance claim.
+
+The project progresses through three stages:
+
+1. Exploratory Data Analysis (EDA) & Random Forest Baseline
+2. Feature Engineering & Feature Selection
+3. Deep Learning with Hyperparameter Optimization (Keras Tuner)
 
 ---
 
-## 📁 Project Structure
+# 📁 Project Structure
 
-```
-Car_Insurance_Claim_Prediction_COMPLETE.ipynb   ← Full merged notebook (all 3 parts)
-README.md
+```text
+├── Car_Insurance_Claim_Classification.ipynb
+├── Car_Insurance_Claim.csv
+├── README.md
+├── Distribution of Claims.png
+├── Claim Rate by Driving Experience.png
+├── Average Credit Score by Claim Outcome.png
+├── claim_rate_by_age.png
+├── vehicle_type_vs_claim.png
+├── correlation_heatmap.png
+└── top10_features.png
 ```
 
 ---
 
-## 📊 Dataset
+# 📊 Dataset
 
 - **Size:** 10,000 customers × 19 features
-- **Target:** `OUTCOME` — binary (1 = filed a claim, 0 = no claim)
-- **Class balance:** ~69% No Claim / ~31% Claim (handled via stratified split + `class_weight="balanced"`)
+- **Target Variable:** `OUTCOME`
+  - 1 = Customer filed a claim
+  - 0 = No claim filed
 
-### Feature Types
+### Feature Categories
 
 | Type | Features |
-|---|---|
-| Numeric | `CREDIT_SCORE`, `ANNUAL_MILEAGE`, `SPEEDING_VIOLATIONS`, `DUIS`, `PAST_ACCIDENTS` |
-| Binary | `VEHICLE_OWNERSHIP`, `MARRIED`, `CHILDREN` |
-| Ordinal | `AGE`, `DRIVING_EXPERIENCE`, `EDUCATION`, `INCOME` |
-| Nominal | `GENDER`, `RACE`, `VEHICLE_YEAR`, `VEHICLE_TYPE`, `POSTAL_CODE` |
+|--------|----------|
+| Numeric | CREDIT_SCORE, ANNUAL_MILEAGE, SPEEDING_VIOLATIONS, DUIS, PAST_ACCIDENTS |
+| Binary | VEHICLE_OWNERSHIP, MARRIED, CHILDREN |
+| Ordinal | AGE, DRIVING_EXPERIENCE, EDUCATION, INCOME |
+| Nominal | GENDER, RACE, VEHICLE_YEAR, VEHICLE_TYPE, POSTAL_CODE |
 
 ---
 
-## 🧩 Part 1 — EDA, Preprocessing & Random Forest Baseline
+# 📈 Exploratory Data Analysis (EDA)
 
-### Goals
-- Load, explore, and clean the dataset
-- Build a full preprocessing pipeline (no data leakage)
-- Train a Random Forest baseline model
-- Analyze feature importance
+## Distribution of Claims
 
-### Preprocessing Pipeline
+![Distribution of Claims](Distribution%20of%20Claims.png)
 
-| Feature Type | Transformer |
-|---|---|
-| Numeric | `SimpleImputer(median)` → `StandardScaler` |
-| Binary | `SimpleImputer(most_frequent)` |
-| Ordinal | `OrdinalEncoder` with explicit category order |
-| Nominal | `OneHotEncoder` |
+### Insight
+The dataset is moderately imbalanced, with non-claim customers representing the majority class. This motivated the use of stratified sampling and class balancing techniques during modeling.
 
-### EDA Highlights
-- **Driving experience** and **credit score** show the strongest separation between claimants and non-claimants
-- Young drivers (16–25) have significantly higher claim rates
-- Older vehicles (before 2015) correlate with more claims
-- Speeding violations and past accidents are strong risk indicators
+---
+
+## Claim Rate by Driving Experience
+
+![Claim Rate by Driving Experience](Claim%20Rate%20by%20Driving%20Experience.png)
+
+### Insight
+Driving experience is one of the strongest predictors of insurance claims. Less experienced drivers exhibit significantly higher claim rates.
+
+---
+
+## Claim Rate by Age
+
+![Claim Rate by Age](claim_rate_by_age.png)
+
+### Insight
+Younger drivers tend to file more insurance claims, reflecting increased driving risk among newer drivers.
+
+---
+
+## Average Credit Score by Claim Outcome
+
+![Average Credit Score by Claim Outcome](Average%20Credit%20Score%20by%20Claim%20Outcome.png)
+
+### Insight
+Customers who filed claims generally have lower average credit scores, suggesting a relationship between financial responsibility and risk behavior.
+
+---
+
+---
+
+## Correlation Heatmap
+
+![Correlation Heatmap](correlation_heatmap.png)
+
+### Insight
+The heatmap reveals relationships among numerical variables and helps identify important patterns within the dataset.
+
+---
+
+# 🧩 Part 1 — EDA, Preprocessing & Random Forest Baseline
+
+## Objectives
+
+- Data cleaning and preprocessing
+- Pipeline construction
+- Baseline Random Forest model
+- Feature importance analysis
+
+## Preprocessing Pipeline
+
+| Feature Type | Method |
+|--------------|---------|
+| Numeric | Median Imputation + StandardScaler |
+| Binary | Most Frequent Imputation |
+| Ordinal | OrdinalEncoder |
+| Nominal | OneHotEncoder |
+
+## Model Performance
+
+| Dataset | Accuracy |
+|----------|----------|
+| Train | 100% |
+| Test | 81% |
+
+### Observation
+The baseline Random Forest achieved strong performance but clearly overfit the training data.
+
+---
+
+## Top 10 Feature Importances
+
+![Top 10 Features](top10_features.png)
+
+| Rank | Feature |
+|--------|---------|
+| 1 | DRIVING_EXPERIENCE |
+| 2 | CREDIT_SCORE |
+| 3 | ANNUAL_MILEAGE |
+| 4 | VEHICLE_OWNERSHIP |
+| 5 | AGE |
+| 6 | INCOME |
+| 7 | SPEEDING_VIOLATIONS |
+| 8 | PAST_ACCIDENTS |
+| 9 | EDUCATION |
+| 10 | VEHICLE_YEAR |
+
+### Key Business Insights
+
+- Lower credit scores correlate with higher claim risk.
+- Driving experience is the strongest behavioral predictor.
+- Annual mileage increases exposure to accidents.
+- Past accidents strongly predict future claims.
+
+---
+
+# ⚙️ Part 2 — Feature Engineering & Feature Selection
+
+## Objectives
+
+- PCA Feature Extraction
+- K-Means Clustering
+- Embedded Feature Selection
+- Model Comparison
+
+## Feature Engineering
+
+| Method | Purpose |
+|----------|----------|
+| PCA (3 Components) | Dimensionality Reduction |
+| K-Means (4 Clusters) | Customer Risk Segmentation |
+
+Feature space expanded from:
+
+```text
+24 Original Features
+↓
++ 3 PCA Features
++ 1 Cluster Feature
+↓
+28 Features
+```
+
+---
+
+## Feature Selection
+
+Using:
+
+```python
+SelectFromModel(RandomForestClassifier())
+```
+
+Feature count reduced:
+
+```text
+28 Features
+↓
+14 Selected Features
+```
+
+while maintaining virtually identical predictive performance.
+
+---
+
+## Model Comparison
+
+| Model | Features | Accuracy |
+|---------|---------|---------|
+| Baseline RF | 24 | ~79% |
+| RF + PCA + KMeans | 28 | ~79% |
+| RF + Feature Selection | 14 | ~79% |
+
+### Conclusion
+
+Feature selection reduced model complexity by 50% without sacrificing accuracy.
+
+---
+
+# 🧠 Part 3 — Neural Network & Hyperparameter Tuning
+
+## Base Neural Network
+
+```text
+Input Layer
+    ↓
+Dense (30, ReLU)
+    ↓
+Dropout (0.3)
+    ↓
+Dense (1, Sigmoid)
+```
+
+### Configuration
+
+- Loss: Binary Crossentropy
+- Optimizer: Adam
+- Learning Rate: 0.001
+- Early Stopping: Patience = 5
 
 ### Results
 
-| Set | Accuracy |
-|---|---|
-| Train | **1.00** (overfitting — default RF with no depth limit) |
-| Test | **0.81** |
-
-### Top 10 Features (Random Forest Importance)
-
-| Rank | Feature | Importance |
-|---|---|---|
-| 1 | `DRIVING_EXPERIENCE` | 0.1873 |
-| 2 | `CREDIT_SCORE` | 0.1286 |
-| 3 | `ANNUAL_MILEAGE` | ~0.10 |
-| 4 | `VEHICLE_OWNERSHIP` | ~0.08 |
-| 5 | `AGE` | ~0.07 |
-| 6 | `INCOME` | ~0.06 |
-| 7 | `SPEEDING_VIOLATIONS` | ~0.05 |
-| 8 | `PAST_ACCIDENTS` | ~0.05 |
-| 9 | `EDUCATION` | ~0.04 |
-| 10 | `VEHICLE_YEAR` (before 2015) | ~0.03 |
-
-### Business Insights
-- **Credit Score:** Lower scores → higher claim risk (reflects financial responsibility)
-- **Driving Experience:** Less experience → more accidents → higher claims
-- **Annual Mileage:** More miles = more exposure to risk
-- **Past Accidents:** Strongest behavioral predictor of future claims
-
----
-
-## ⚙️ Part 2 — Feature Engineering & Feature Selection
-
-### Goals
-- Apply PCA + KMeans feature engineering
-- Apply embedded feature selection (`SelectFromModel`)
-- Compare all model variants
-
-### Key Design Decisions
-- `POSTAL_CODE` reclassified as **nominal** (only 4 unique geographic regions) and one-hot encoded — shows meaningful variation in claim rates across regions
-- `class_weight="balanced"` added to handle class imbalance
-
-### Feature Engineering
-
-| Method | What it adds |
-|---|---|
-| **PCA (3 components)** | Captures main directions of variance across all preprocessed features |
-| **KMeans (4 clusters)** | Assigns each customer to a risk-segment group (optimal k=4 via Elbow Method) |
-
-> ⚠️ No data leakage: PCA and KMeans fit **only on training data**, transformed on test set.
-
-Feature space: **24 original → +3 PCA + 1 KMeans = 28 engineered features**
-
-### Feature Selection (Embedded — `SelectFromModel`)
-- Internal RF with `threshold='median'` keeps only features with importance ≥ median
-- Reduced from **28 → 14 selected features**
-
-### Model Comparison
-
-| Model | Features | Test Accuracy |
-|---|---|---|
-| Baseline RF (Part 1 re-trained, balanced) | 24 | ~0.79 |
-| Engineered RF (+ PCA + KMeans) | 28 | ~0.79 |
-| Final RF (SelectFromModel) | 14 | ~0.79 |
-
-> Feature engineering maintained accuracy while cutting feature count by 50% — a more efficient and interpretable model.
-
-### Top 10 Features — Permutation Importance (Final Model)
-`DRIVING_EXPERIENCE`, `CREDIT_SCORE`, `ANNUAL_MILEAGE`, `PAST_ACCIDENTS`, `AGE`, `SPEEDING_VIOLATIONS`, `INCOME`, `VEHICLE_OWNERSHIP`, `PCA_1`, `VEHICLE_TYPE`
-
----
-
-## 🧠 Part 3 — Neural Network + Keras Tuner
-
-### Goals
-- Build a binary classification neural network (1 hidden layer)
-- Train with Early Stopping
-- Tune 4 hyperparameters with Keras Tuner (Hyperband)
-
-### Architecture — Base Model
-
-```
-Input  →  Dense(30, ReLU)  →  Dropout(0.3)  →  Dense(1, Sigmoid)
-```
-
-- **Loss:** Binary Crossentropy
-- **Optimizer:** Adam (lr=0.001)
-- **Metrics:** Accuracy, Recall, Precision
-- **Early Stopping:** patience=5 on `val_accuracy`
-- **Stopped at epoch 28** (saved 22 unnecessary epochs)
-
-### Training History Observations
-- Accuracy steadily increased; train/val stayed close → good generalization, no overfitting
-- Loss decreased on both curves → Dropout prevented memorization
-- Recall improved from ~0.44 → ~0.76 across epochs
-- Precision stabilized around ~0.78
-
-### Base Model Results (Test Set)
-
 | Metric | Value |
-|---|---|
-| **Test Accuracy** | **84.70%** |
-| Test Loss | 0.3423 |
-| Precision (class 1) | 0.75 |
-| Recall (class 1) | 0.78 |
-| F1-Score (class 1) | 0.76 |
+|----------|----------|
+| Accuracy | 84.70% |
+| Precision | 0.75 |
+| Recall | 0.78 |
+| F1 Score | 0.76 |
 
 ---
 
-### Hyperparameter Tuning — Keras Tuner (Hyperband)
+## Hyperparameter Tuning
 
-| Hyperparameter | Search Space |
-|---|---|
-| Units (hidden layer) | 32, 64, 128, 256 |
-| Dropout Rate | 0.1 → 0.5 (step 0.1) |
+### Search Space
+
+| Parameter | Values |
+|------------|----------|
+| Units | 32, 64, 128, 256 |
+| Dropout | 0.1 – 0.5 |
 | Optimizer | Adam, RMSprop, SGD |
 | Learning Rate | 0.0001, 0.001, 0.01 |
 
-- **Algorithm:** Hyperband (fast — eliminates poor trials early)
-- **Trials:** 90
-- **Time:** ~9 minutes 47 seconds
-- **Best val_accuracy:** 86.25%
+### Best Hyperparameters
 
-### Best Hyperparameters Found
+| Parameter | Best Value |
+|------------|------------|
+| Units | 256 |
+| Dropout | 0.1 |
+| Optimizer | RMSprop |
+| Learning Rate | 0.001 |
 
-| Hyperparameter | Base Model | Best Tuned |
-|---|---|---|
-| Units | 30 | **256** |
-| Dropout Rate | 0.3 | **0.1** |
-| Optimizer | Adam | **RMSprop** |
-| Learning Rate | 0.001 | **0.001** |
+---
 
-> The tuner preferred **more capacity** (256 units) and **lighter regularization** (dropout 0.1) — the dataset benefits from a larger model.
-
-### Best Tuned Model — Training
-- Converged faster: **stopped at epoch 13** (vs 28 for base)
-
-### Final Comparison
+## Final Model Comparison
 
 | Metric | Base NN | Tuned NN |
-|---|---|---|
-| Test Accuracy | **84.70%** | 84.40% |
-| Test Loss | 0.3423 | 0.3486 |
-| Precision (class 1) | 0.75 | 0.73 |
-| **Recall (class 1)** | 0.78 | **0.80** |
-| F1-Score (class 1) | 0.76 | 0.76 |
+|----------|----------|----------|
+| Accuracy | 84.70% | 84.40% |
+| Precision | 0.75 | 0.73 |
+| Recall | 0.78 | 0.80 |
+| F1 Score | 0.76 | 0.76 |
 
-> The tuned model trades a tiny accuracy drop for **higher recall (0.80 vs 0.78)**. In insurance, recall is the critical metric — missing a real claimant is more costly than a false alarm.
+### Recommendation
 
----
+Although accuracy decreased slightly, the tuned model achieved higher recall.
 
-## 🏆 Overall Project Summary
-
-| Model | Test Accuracy | Recall (class 1) | Notes |
-|---|---|---|---|
-| RF Baseline — Part 1 | 81% | — | Overfits (train=100%), no class balancing |
-| RF Baseline — Part 2 (balanced) | ~79% | ~0.74 | `class_weight="balanced"` added |
-| RF + PCA + KMeans — Part 2 | ~79% | ~0.74 | Feature engineering, same accuracy |
-| RF + Feature Selection — Part 2 | ~79% | ~0.74 | 14 features, same performance |
-| Base Neural Network — Part 3 | **84.70%** | 0.78 | 1 hidden layer, Early Stopping |
-| **Tuned Neural Network — Part 3** | 84.40% | **0.80** | Best recall — recommended for deployment |
-
-**Best model for deployment:** The **Tuned Neural Network** — highest recall for catching actual claimants, which is the business-critical metric for insurance pricing and risk assessment.
+For insurance applications, recall is often the most important metric because missing a true claimant can be more costly than generating a false positive.
 
 ---
 
-## 🛠️ Tech Stack
+# 🏆 Final Results
 
-| Category | Libraries |
-|---|---|
-| Data | `pandas`, `numpy` |
-| Visualization | `matplotlib`, `seaborn` |
-| ML | `scikit-learn` (RF, PCA, KMeans, SelectFromModel, pipelines) |
-| Deep Learning | `TensorFlow / Keras` |
-| Hyperparameter Tuning | `keras-tuner` (Hyperband) |
-| Environment | Google Colab |
+| Model | Accuracy | Recall |
+|----------|----------|----------|
+| RF Baseline | 81% | — |
+| RF Balanced | 79% | 0.74 |
+| RF + PCA + KMeans | 79% | 0.74 |
+| RF + Feature Selection | 79% | 0.74 |
+| Base Neural Network | 84.70% | 0.78 |
+| Tuned Neural Network | 84.40% | 0.80 |
 
----
+✅ **Recommended Deployment Model:** Tuned Neural Network
 
-## ▶️ How to Run
-
-1. Open `Car_Insurance_Claim_Prediction_COMPLETE.ipynb` in **Google Colab**
-2. Mount your Google Drive and update the `file_path` variable to point to your `Car_Insurance_Claim.csv`
-3. Run all cells top to bottom (**Runtime → Run All**)
-4. `keras-tuner` is installed automatically via `!pip install -q keras-tuner` at the start of Part 3
+Reason:
+- Highest Recall
+- Strong Generalization
+- Better identification of high-risk customers
 
 ---
 
-## 👤 Author
+# 🛠️ Tech Stack
 
-**Mohamed Shehada**  
-Intermediate Machine Learning Project — AXSOS Academy
+- Python
+- Pandas
+- NumPy
+- Matplotlib
+- Seaborn
+- Scikit-Learn
+- TensorFlow / Keras
+- Keras-Tuner
+- Google Colab
+
+---
+
+# ▶️ How to Run
+
+1. Open the notebook in Google Colab.
+2. Upload `Car_Insurance_Claim.csv`.
+3. Run all notebook cells.
+4. The notebook automatically installs `keras-tuner`.
+
+---
+
+# 👤 Author
+
+**Mohamed Shehada**
+
+Machine Learning Project – AXSOS Academy
