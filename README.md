@@ -50,10 +50,6 @@ The dataset is moderately imbalanced — 68.67% non-claimants vs 31.33% claimant
 
 **Insight:** The dataset is moderately imbalanced — 68.67% non-claimants vs 31.33% claimants. This motivated the use of stratified sampling and `class_weight='balanced'` during modeling.
 
-### Vehicle Type vs Claim Outcome
-
-![Vehicle Type vs Claim](vehicle_type_vs_claim.png)
-
 ### Claim Rate by Driving Experience
 
 ![Claim Rate by Driving Experience](Claim%20Rate%20by%20Driving%20Experience.png)
